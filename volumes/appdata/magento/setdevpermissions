@@ -1,0 +1,15 @@
+#!/bin/sh
+#
+# Set the correct file permissions for Magento 2
+# at startup.
+
+chgrp -R 33 /srv/dev
+chmod -R g+rs /srv/dev
+
+chmod -R ug+rws /srv/§dev/html/pub/errors
+chmod -R ug+rws /srv/dev/html/pub/static
+chmod -R ug+rws /srv/dev/html/pub/media
+chmod -R ug+rws /srv/dev/html/app/etc
+chmod -R ug+rws /srv/dev/html/var
+
+chmod ug+x /srv/dev/html/bin/magento

@@ -1,0 +1,77 @@
+nginx:
+  image: 'monbelle/resty:latest'
+  # build: docker-images/nginx
+  ports:
+    - 80:80
+    - 7000:7000
+    - 443:443
+  links:
+    - phpfpm
+  volumes_from:
+    - appdata
+
+appdata:
+  image: tianon/true
+  volumes:
+    - './volumes/www:/srv/www'
+    - './volumes/dev:/srv/dev'
+    - './volumes/appdata/magento:/srv/www/b:ro'
+    - './volumes/appdata/magento:/srv/dev/b:ro'
+    # - ./volumes/backups/config/resty/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
+    - ./volumes/appdata/usr/local/openresty/nginx/conf:/usr/local/openresty/nginx/conf
+    - ./volumes/appdata/usr/local/etc:/usr/local/etc
+    - ./volumes/appdata/etc/redis:/etc/redis
+    - ./volumes/appdata/usr/local/docker:/usr/local/docker
+    - ./volumes/appdata/home:/var/www
+    - ./volumes/appdata/home:/root
+    # - ./volumes/data/:/data
+    - ./volumes/backups/:/backups
+    - ./volumes/var:/srv/var
+
+
+phpfpm:
+  image: 'monbelle/php:7-fpm-latest'
+  # build: docker-images/phpfpm
+  volumes_from:
+    - appdata
+  links:
+    - db
+  environment:
+    - TERM=xterm-256color
+    - MAGE_MODE=developer
+    - PHP_MEMORY_LIMIT=2G
+    - M2SETUP_DB_HOST=DB
+    - M2SETUP_DB_NAME=magento_dev
+    - M2SETUP_DB_USER=magento_dev
+    - M2SETUP_DB_PASSWORD=magento_dev
+    - M2SETUP_BASE_URL=http://mag-dev.box:7000/
+    - M2SETUP_BASE_URL_SSL=https://mag-dev.box:7000/
+    - M2SETUP_ADMIN_URL=admin
+    - M2SETUP_ADMIN_FIRSTNAME=Magento
+    - M2SETUP_ADMIN_LASTNAME=Dev
+    - M2SETUP_ADMIN_EMAIL=dummy@gmail.com
+    - M2SETUP_ADMIN_USER=admin
+    - M2SETUP_ADMIN_PASSWORD=Password1
+    - M2SETUP_LANGUAGE=pt_BR
+    - M2SETUP_CURRENCY=BRL
+    - M2SETUP_TIMEZONE=America/Sao_Paulo
+    - M2SETUP_USE_SSL=0
+    - M2SETUP_USE_SSL_ADMIN=0
+    - M2SETUP_OPTIONS=--cleanup-database --use-sample-data
+    - NOT_USED_OPTIONS=--use-sample-data --cleanup-database
+
+db:
+  image: 'percona:latest'
+  environment:
+    - TERM=xterm-256color
+    - MYSQL_DATABASE=magento_dev
+    - MYSQL_PASSWORD=magento_dev
+    - MYSQL_ROOT_PASSWORD=root_pwd
+    - MYSQL_USER=magento_dev
+    - MYSQL_ALLOW_EMPTY_PASSWORD=no
+  ports:
+    - '3306:3306'
+    - '3333:3306'
+  volumes:
+    - './volumes/data/mysql:/var/lib/mysql'
+    - './volumes/appdata/etc/mysql:/etc/mysql'

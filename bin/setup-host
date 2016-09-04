@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+ssh root@$DOCKER_REMOTE_HOST "apt-get update"
+ssh root@$DOCKER_REMOTE_HOST "apt-get install -y git"
+
+scp -r ~/.ssh root@$DOCKER_REMOTE_HOST:/root/ssh
+scp -r ~/.gitconfig root@$DOCKER_REMOTE_HOST:~/.gitconfig
+ssh root@$DOCKER_REMOTE_HOST "cp -R  /root/ssh/* /root/.ssh/ && chmod 400 ~/.ssh/id_rsa"
+
+ssh root@$DOCKER_REMOTE_HOST "git clone git@github.com:gsc-dev/mag.git /mag && cd /mag && git submodule init && git submodule update"
+ssh root@$DOCKER_REMOTE_HOST "ln -s /mag/volumes /volumes"
+ssh root@$DOCKER_REMOTE_HOST "mkdir -p /volumes/config/composer"
+scp -r ~/.composer/*.json root@$DOCKER_REMOTE_HOST:/volumes/config/composer

@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# ssh $DOCKER_MACHINE_NAME "apt-get update"
+# ssh $DOCKER_MACHINE_NAME "apt-get install -y git"
+
+rm -rf tmp
+mkdir tmp
+cp -R ~/.ssh tmp/ssh
+cp -R ~/.gitconfig tmp/gitconfig
+cp -R ~/.composer tmp/composer
+
+
+docker-machine scp -r tmp/ssh $DOCKER_MACHINE_NAME:/root/ssh
+docker-machine scp -r tmp/gitconfig $DOCKER_MACHINE_NAME:~/.gitconfig
+docker-machine scp -r tmp/composer/*.json $DOCKER_MACHINE_NAME:/root/.composer
+docker-machine ssh $DOCKER_MACHINE_NAME "rm -rf /root/.ssh && mv -f /root/ssh /root/.ssh && chmod 400 ~/.ssh/id_rsa"
+
+ssh $DOCKER_MACHINE_NAME "git clone git@github.com:gsc-dev/mag.git /mag"
+ssh $DOCKER_MACHINE_NAME "ln -s /docker-mag/volumes /volumes"

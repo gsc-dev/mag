@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+rm -rf volumes/data
+mkdir volumes/data
+ssh root@$DOCKER_REMOTE_HOST "tar -czvf /backups/last/data-pull.tar.gz /data/mysql"
+scp root@$DOCKER_REMOTE_HOST:/backups/last/data-pull.tar.gz volumes/data/
+tar -xzvf volumes/data/data-pull.tar.gz -C volumes/

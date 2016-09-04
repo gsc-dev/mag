@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+cp ~/.composer/auth.json .
+docker-machine scp -r auth.json $DOCKER_MACHINE_NAME:/root/.composer
+docker-machine ssh $DOCKER_MACHINE_NAME "sudo chown -R root /root/.composer"
+rm auth.json
+
+docker-machine scp -r ./volumes $DOCKER_MACHINE_NAME:~/volumes
+docker-machine ssh $DOCKER_MACHINE_NAME "sudo rm -rf /volumes"
+docker-machine ssh $DOCKER_MACHINE_NAME "sudo mv ~/volumes /volumes"
+docker-machine ssh $DOCKER_MACHINE_NAME "sudo chown -R root /volumes"

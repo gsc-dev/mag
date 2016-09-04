@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+ssh root@$DOCKER_HOST "cd /docker-mag && git pull"

@@ -1,0 +1,17 @@
+#!/bin/sh
+
+apt-get update
+apt-get install -y vim git sudo
+chsh -s /bin/bash www-data
+chown -R www-data:www-data /srv/www
+ulimit -s 65536
+
+alias db='mysql --user="$MYSQL_USER" --password="$MYSQL_PASSWORD" "$MYSQL_DATABASE"'
+echo "alias own='chown -R www-data:www-data /srv/www' && chown -R www-data:www-data /var/www" >> ~/.bashrc
+echo alias db='mysql --user="$MYSQL_USER" --password="$MYSQL_PASSWORD" "$MYSQL_DATABASE"' >> ~/.bashrc
+echo "export TERM=dumb" >> ~/.bashrc
+echo "su www-data" >> ~/.bashrc
+su www-data
+sudo echo "export PATH=$PATH:/srv/www/bin" >> ~/.bashrc
+echo "alias own='chown -R www-data:www-data /srv/www'" >> ~/.bashrc
+echo "alias own='export TERM=dumb'" >> ~/.bashrc

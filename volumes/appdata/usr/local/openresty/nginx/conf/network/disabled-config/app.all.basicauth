@@ -1,0 +1,17 @@
+## If you want to protect part of your site using Basic Auth, you can use this example.
+## Doublecheck that you pass the request to the appropriate handler, otherwise your PHP inside the
+## protected area will not be executed.
+
+#location ^~ /my-admin-area/ {
+#    auth_basic           "Login required";
+#    auth_basic_user_file /data/web/htpasswd;
+#    location ~ \.php$ {
+#        echo_exec @phpfpm;
+#    }
+#}
+
+## If you wish to protect the entire site using Basic Auth, you can use this example.
+## You can also rename this file to 'staging.basicauth' if you only wish to protect your staging environment
+
+#auth_basic           "Login required";
+#auth_basic_user_file /data/web/htpasswd;

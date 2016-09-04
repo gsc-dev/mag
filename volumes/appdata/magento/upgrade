@@ -1,0 +1,22 @@
+#!/bin/sh
+
+composer update magento/magento-composer-installer
+composer require magento/product-community-edition 2.0.5 --no-update
+composer update
+php bin/magento setup:upgrade
+
+fallocate -l 4G /swapfile
+chmod 600 /swapfile
+mkswap /swapfile
+swapon /swapfile
+echo "/swapfile   none    swap    sw    0   0" >> /etc/fstab
+cat /etc/fstab
+swapon -s
+ls -lh /swapfile
+
+sysctl vm.swappiness=10
+sysctl vm.vfs_cache_pressure=50
+echo "vm.swappiness=10" >> /etc/sysctl.conf
+echo "vm.vfs_cache_pressure = 50" >> /etc/sysctl.conf
+cat /proc/sys/vm/swappiness
+cat /proc/sys/vm/vfs_cache_pressure

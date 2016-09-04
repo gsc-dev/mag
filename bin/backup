@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+rm  -rf /backups/last
+mkdir -p  /backups/archive
+mkdir -p  /backups/lastls
+tar czf /backups/last/www.tar.gz /mag/volumes/www/*
+tar czf /backups/last/data.tar.gz /data/mysql
+mkdir -p  /backups/archive
+cp -R  /backups/last/ /backups/archive/backup-$(date +%Y-%m-%d)$1/
+
+# cp -R /backups/magento/backups/media/pub/media/wysiwyg/monbelle/ pub/media/wysiwyg/monbelle/
+# cp -R /backups/magento/backups/media/pub/media/logo/ pub/media/logo/
+# # cp -R /backups/magento/backups/media/pub/media/catalog
+# cp -R /backups/magento/backups/media/pub/media/wysiwyg/conselhos_cilios.png pub/media/wysiwyg/
+# cp -R /backups/magento/backups/media/pub/media/wysiwyg/instru_es_cilios.png pub/media/wysiwyg/
+# cp -R /backups/magento/backups/media/pub/media/wysiwyg/shampoo-haskell-cavalo-forte-300ml.png pub/media/wysiwyg/
+
+
+# ssh root@$DOCKER_HOST "rm -rf /backup/tmp && mkdir -p /backup/tmp"
+# ssh root@$DOCKER_HOST "docker cp phpfpm-1.monbelle.a6842ed4:/srv/www /backup/tmp"
+# ssh root@$DOCKER_HOST "docker cp db-1.monbelle.566c73bb:/var/lib/mysql /backup/tmp"
+# ssh root@$DOCKER_HOST "tar czf /backup/backup-$(date +%Y-%m-%d)$1.tar.gz /backup/tmp/*"

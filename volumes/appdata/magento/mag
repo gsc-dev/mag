@@ -1,0 +1,59 @@
+#!/usr/bin/env php
+<?php
+// Script start
+$time_start = microtime(true);
+$rustart = getrusage();
+
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+if (PHP_SAPI !== 'cli') {
+    echo 'bin/magento must be run as a CLI application';
+    exit(1);
+}
+
+// Script end
+function rutime($ru, $rus, $index) {
+    return ($ru["ru_$index.tv_sec"]*1000 + intval($ru["ru_$index.tv_usec"]/1000))
+     -  ($rus["ru_$index.tv_sec"]*1000 + intval($rus["ru_$index.tv_usec"]/1000));
+}
+
+// Script end
+function echoTime($time_start, $rustart) {
+    $ru = getrusage();
+    $time_end = microtime(true);
+    $execution_time = ($time_end - $time_start);
+
+    //execution time of the script
+    echo "Time: ".round($execution_time,3)." s \n";
+    echo "CPU Time " . rutime($ru, $rustart, "utime") . " ms \n";
+    echo "Sysem Calls " . rutime($ru, $rustart, "stime") . " ms \n\n";
+}
+
+try {
+    require __DIR__ . '/../app/bootstrap.php';
+} catch (\Exception $e) {
+    echo 'Autoload error: ' . $e->getMessage();
+    exit(1);
+}
+try {
+    echo "Magendo CLI \n\n";
+
+    $handler = new \Magento\Framework\App\ErrorHandler();
+    set_error_handler([$handler, 'handler']);
+    $application = new Magento\Framework\Console\Cli('Magento CLI');
+
+    echoTime($time_start, $rustart);
+    $application->run();
+
+} catch (\Exception $e) {
+    while ($e) {
+        echo $e->getMessage();
+        echo $e->getTraceAsString();
+        echo "\n\n";
+        $e = $e->getPrevious();
+    }
+    exit(Cli::RETURN_FAILURE);
+}

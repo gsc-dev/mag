@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+repo=$1
+
+if [ -z "$repo" ]; then return;  fi
+
+if [ -d "$repo" ]; then
+	echo "removing submodule $repo ..."
+else
+	echo "[error] submodule $repo not found!"
+	return
+fi
+
+git submodule deinit -f $repo
+git rm -f $repo
+git rm --cached $repo
+rm -rf .git/modules/$repo
+rm -rf $repo
+
+echo "please remove entry from .gitmodules $repo ..."
