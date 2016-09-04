@@ -17,14 +17,13 @@ appdata:
     - './volumes/dev:/srv/dev'
     - './volumes/appdata/magento:/srv/www/b:ro'
     - './volumes/appdata/magento:/srv/dev/b:ro'
-    # - ./volumes/backups/config/resty/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
     - ./volumes/appdata/usr/local/openresty/nginx/conf:/usr/local/openresty/nginx/conf
     - ./volumes/appdata/usr/local/etc:/usr/local/etc
     - ./volumes/appdata/etc/redis:/etc/redis
     - ./volumes/appdata/usr/local/docker:/usr/local/docker
     - ./volumes/appdata/home:/var/www
     - ./volumes/appdata/home:/root
-    # - ./volumes/data/:/data
+    - ./volumes/data/:/data
     - ./volumes/backups/:/backups
     - ./volumes/var:/srv/var
 
@@ -37,8 +36,6 @@ phpfpm:
   links:
     - db
   environment:
-    - TERM=xterm-256color
-    - MAGE_MODE=developer
     - PHP_MEMORY_LIMIT=2G
     - M2SETUP_DB_HOST=DB
     - M2SETUP_DB_NAME=magento_dev
@@ -63,7 +60,6 @@ phpfpm:
 db:
   image: 'percona:latest'
   environment:
-    - TERM=xterm-256color
     - MYSQL_DATABASE=magento_dev
     - MYSQL_PASSWORD=magento_dev
     - MYSQL_ROOT_PASSWORD=root_pwd

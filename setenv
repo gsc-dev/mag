@@ -2,14 +2,16 @@
 export DOCKER_REMOTE_HOST_old=104.236.198.53
 export DOCKER_REMOTE_HOST=104.236.179.16
 export DOCKER_MACHINE_NAME=default
+export DOCKER_REMOTE_HOST_RESTY_CONTAINER=$(ssh root@$DOCKER_REMOTE_HOST docker ps | awk '$2 ~ "resty"' | awk '{print $NF};')
 export DOCKER_REMOTE_HOST_MAG_CONTAINER=$(ssh root@$DOCKER_REMOTE_HOST docker ps | awk '$2 ~ "fpm"' | awk '{print $NF};')
-export DOCKER_REMOTE_HOST_DB_CONTAINER=$(ssh root@$DOCKER_REMOTE_HOST docker ps | awk '$2 ~ "maria"' | awk '{print $NF};')
+export DOCKER_REMOTE_HOST_DB_CONTAINER=$(ssh root@$DOCKER_REMOTE_HOST docker ps | awk '$2 ~ "percona"' | awk '{print $NF};')
 
 echo "DOCKER_MACHINE_HOST:$DOCKER_HOST"
 echo "DOCKER_MACHINE_NAME:$DOCKER_MACHINE_NAME"
 echo "DOCKER_REMOTE_HOST:$DOCKER_REMOTE_HOST"
 echo "DOCKER_REMOTE_HOST_MAG_CONTAINER:$DOCKER_REMOTE_HOST_MAG_CONTAINER"
 echo "DOCKER_REMOTE_HOST_DB_CONTAINER:$DOCKER_REMOTE_HOST_DB_CONTAINER"
+echo "DOCKER_REMOTE_HOST_RESTY_CONTAINER:$DOCKER_REMOTE_HOST_RESTY_CONTAINER"
 
 alias addssh="cat ~/.ssh/id_rsa.pub | ssh -t -t root@$DOCKER_REMOTE_HOST 'cat >> .ssh/authorized_keys'"
 alias sshh="ssh root@$DOCKER_REMOTE_HOST"
@@ -20,6 +22,7 @@ alias sshapdata="docker exec -u root -it mag_db_1  bash"
 alias debugphp="docker run --rm -it --volumes-from mag_appdata_1 monbelle/php:5.6.23-fpm-latest  bash"
 alias drma="docker ps -a | grep 'ago' | awk '{print $1}' | xargs --no-run-if-empty docker rm -f && docker ps -a"
 alias docker-debug='docker-machine ssh $DOCKER_MACHINE_NAME "tail -f /var/log/docker.log"'
+alias sshhresty='ssh -t root@$DOCKER_REMOTE_HOST "docker exec -it $DOCKER_REMOTE_HOST_RESTY_CONTAINER  bash"'
 alias sshhmag='ssh -t root@$DOCKER_REMOTE_HOST "docker exec -it $DOCKER_REMOTE_HOST_MAG_CONTAINER  bash"'
 alias sshhdb='ssh -t root@$DOCKER_REMOTE_HOST "docker exec -it $DOCKER_REMOTE_HOST_DB_CONTAINER  bash"'
 alias sshhown='ssh -t root@$DOCKER_REMOTE_HOST "docker exec $DOCKER_REMOTE_HOST_MAG_CONTAINER  chsh -s /bin/bash www-data && cp -R /root/.composer /var/www/.composer && chown -R www-data:www-data /srv/www && chown -R www-data:www-data /var/www && su www-data && bash"'

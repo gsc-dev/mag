@@ -137,3 +137,6 @@ exit
 sshh
 sshh
 exit
+exit
+sshhmag
+exit
